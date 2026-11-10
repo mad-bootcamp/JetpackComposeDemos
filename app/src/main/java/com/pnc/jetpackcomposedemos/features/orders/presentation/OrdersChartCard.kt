@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import com.pnc.jetpackcomposedemos.R
 import com.pnc.jetpackcomposedemos.features.orders.domain.MonthTotal
@@ -31,7 +32,7 @@ fun OrdersChartCard(
     if (totals.isEmpty()) return
 
     val currency = remember { NumberFormat.getCurrencyInstance(Locale.US) }
-    val locale = Locale.getDefault()
+    val locale = LocalLocale.current.platformLocale
 
     val bars = remember(totals) {
         totals.map { Bar(
