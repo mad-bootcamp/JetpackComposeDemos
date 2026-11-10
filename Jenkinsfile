@@ -9,7 +9,7 @@ pipeline {
         timestamps()
         timeout(time: 45, unit: 'MINUTES')
         disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '10', ))
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
     }
 
     environment {
@@ -34,6 +34,18 @@ pipeline {
                 }
             }
             bat "${GRADLE} --version"
+            }
+        }
+        stage('Unit tests') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    bat "${GRADLE} testDebugUnitTest"
+                }
+            }
+            post {
+                always {
+                    junit testResults: 'app/build/test-results/testDebugUnitTest/*.xml', allowEmptyResults: false
+                }
             }
         }
         stage('Build debug APK') {
